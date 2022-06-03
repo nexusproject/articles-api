@@ -1,2 +1,2 @@
-# py-example-articles
+# py-articles-api
 Python code example
