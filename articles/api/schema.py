@@ -15,3 +15,7 @@ class ReplyFailed(Reply):
 
 class ReplyList(Reply):
     payload: list[ArticleEntry]
+
+class ReplyOne(Reply):
+    article: ArticleEntry
+

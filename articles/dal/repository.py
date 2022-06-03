@@ -40,8 +40,6 @@ class Repository:
 
     async def update(self, article_id, article):
         """Update."""
-        print('update id -> ', article_id)
-
         async with self.async_session() as session, session.begin():
             if not await self._has(session, article_id):
                 raise RepositoryException(f"No article ID {article_id}. Cant UPDATE.")
@@ -62,9 +60,20 @@ class Repository:
                 delete(Article).where(Article.article_id == article_id)
             )
 
-    async def list(self, from_date, sort_by, sort_order, page, page_size):
-        p([from_date, sort_by, sort_order, page, page_size])
+    async def get(self, article_id):
+        """Get one article by id."""
+        async with self.async_session() as session, session.begin():
+            found = await session.execute(
+                select(Article).where(Article.article_id == article_id)
+            )
 
+            if article:=found.scalars().one_or_none():
+                return ArticleEntry.from_orm(article)
+            else:
+                raise RepositoryException(f"No article ID {article_id}. Cant GET.")
+
+
+    async def list(self, from_date, sort_by, sort_order, page, page_size):
         async with self.async_session() as session, session.begin():
             stmt = select(Article)
 

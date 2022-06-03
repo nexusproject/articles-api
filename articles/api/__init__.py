@@ -10,7 +10,7 @@ from .response import MyResponse
 from pprint import pprint as p
 from pydantic import BaseModel
 
-from .schema import Reply, ReplyFailed, ReplyList
+from .schema import Reply, ReplyFailed, ReplyList, ReplyOne
 from articles import Article, ArticleEntry
 
 
@@ -64,6 +64,20 @@ async def delete(article_id: int, repository: Repository = Depends(Repository)):
     await repository.delete(article_id)
 
     return Reply(success=True)
+
+
+@app.get(
+    "/articles/v1/get/{article_id}",
+    response_class=MyResponse,
+    response_model=ReplyOne,
+    responses={418: {"model": ReplyFailed}},
+    status_code=200,
+)
+async def get(article_id: int, repository: Repository = Depends(Repository)):
+    return ReplyOne(
+        success=True,
+        article=await repository.get(article_id)
+    )
 
 
 @app.get(
