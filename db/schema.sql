@@ -16,7 +16,7 @@
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `articles` (
-  `article_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id (get from queue)',
+  `article_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique article id',
   `topic` varchar(255) NOT NULL COMMENT 'Article topic',
   `text` text /*!50633 COLUMN_FORMAT COMPRESSED */ COMMENT 'Article text',
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation datetime',
