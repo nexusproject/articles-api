@@ -3,7 +3,7 @@
 Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import articles
 from articles import Article
@@ -22,23 +22,26 @@ async def test_create_success() -> None:
         text="expected text",
     )
 
-    articles.api.Repository.insert = AsyncMock()
+    with patch("articles.dal.repository.Repository.insert", new_callable=AsyncMock):
+        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+            response = await ac.post("/articles/v1/create", content=article.json())
 
-    async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
-        response = await ac.post("/articles/v1/create", content=article.json())
+        articles.api.Repository.insert.assert_called_with(article)
+        assert response.status_code == 200
+        assert response.json() == Reply(success=True).dict()
 
-    articles.api.Repository.insert.assert_called_with(article)
-    assert response.status_code == 200
-    assert response.json() == Reply(success=True).dict()
+        articles.api.Repository.insert.reset_mock()
 
 
 @pytest.mark.asyncio()
 async def test_create_failed() -> None:
     """Tests answer for wrong request."""
-    articles.api.Repository.insert = AsyncMock()
+    with patch("articles.dal.repository.Repository.insert", new_callable=AsyncMock):
 
-    async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
-        response = await ac.post("/articles/v1/create", data={"wrong": "request"})
+        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+            response = await ac.post("/articles/v1/create", data={"wrong": "request"})
 
-    assert response.status_code == 422
-    assert response.reason_phrase == "Unprocessable Entity"
+        assert response.status_code == 422
+        assert response.reason_phrase == "Unprocessable Entity"
+
+        articles.api.Repository.insert.reset_mock()

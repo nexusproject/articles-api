@@ -3,7 +3,7 @@
 Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import articles
 from articles.api.schema import Reply, ReplyFailed
@@ -17,27 +17,34 @@ import pytest
 @pytest.mark.asyncio()
 async def test_delete_success() -> None:
     """Tests that the repository is calls properly and the response."""
-    articles.api.Repository.delete = AsyncMock()
+    with patch("articles.dal.repository.Repository.delete", new_callable=AsyncMock):
+        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+            response = await ac.delete("/articles/v1/delete/123")
 
-    async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
-        response = await ac.delete("/articles/v1/delete/123")
+        articles.api.Repository.delete.assert_called_with(123)
+        assert response.status_code == 200
 
-    articles.api.Repository.delete.assert_called_with(123)
-    assert response.status_code == 200
+        assert response.json() == Reply(success=True).dict()
 
-    assert response.json() == Reply(success=True).dict()
+        articles.api.Repository.delete.reset_mock()
 
 
 @pytest.mark.asyncio()
 async def test_delete_failed() -> None:
     """Tests the response if the reposithory raises an exception."""
-    articles.api.Repository.delete = AsyncMock(
-        side_effect=RepositoryException("expected message")
-    )
+    with patch(
+        "articles.dal.repository.Repository.delete",
+        new_callable=AsyncMock,
+        side_effect=RepositoryException("expected message"),
+    ):
+        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+            response = await ac.delete("/articles/v1/delete/123")
 
-    async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
-        response = await ac.delete("/articles/v1/delete/123")
+        assert response.status_code == 418
 
-    assert response.status_code == 418
+        assert response.json() == ReplyFailed(
+            success=False,
+            error="expected message"
+        ).dict()
 
-    assert response.json() == ReplyFailed(success=False, error="expected message").dict()
+        articles.api.Repository.delete.reset_mock()

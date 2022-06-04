@@ -4,7 +4,7 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
 from datetime import datetime
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import articles
 from articles import ArticleEntry
@@ -27,38 +27,33 @@ async def test_get_success() -> None:
         created=datetime.now(),
     )
 
-    articles.api.Repository.get = AsyncMock(return_value=article)
+    with patch(
+        "articles.dal.repository.Repository.get",
+        new_callable=AsyncMock,
+        return_value=article,
+    ):
+        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+            response = await ac.get("/articles/v1/get/123")
 
-    async with AsyncClient(
-        app=articles.api.app,
-        base_url="http://localhost"
-    ) as ac:
-        response = await ac.get("/articles/v1/get/123")
+        articles.api.Repository.get.assert_called_with(123)
+        assert response.status_code == 200
 
-    articles.api.Repository.get.assert_called_with(123)
-    assert response.status_code == 200
-
-    expected = ReplyOne(success=True, article=article).dict()
-    expected["article"]["created"] = expected["article"]["created"].isoformat()
-    assert response.json() == expected
+        expected = ReplyOne(success=True, article=article).dict()
+        expected["article"]["created"] = expected["article"]["created"].isoformat()
+        assert response.json() == expected
 
 
 @pytest.mark.asyncio()
 async def test_get_failed() -> None:
     """Tests the response if the reposithory raises an exception."""
-    articles.api.Repository.get = AsyncMock(
-        side_effect=RepositoryException("expected message")
-    )
+    with patch(
+        "articles.dal.repository.Repository.get",
+        new_callable=AsyncMock,
+        side_effect=RepositoryException("expected message"),
+    ):
+        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+            response = await ac.get("/articles/v1/get/123")
 
-    async with AsyncClient(
-        app=articles.api.app,
-        base_url="http://localhost"
-    ) as ac:
-        response = await ac.get("/articles/v1/get/123")
+        assert response.status_code == 418
 
-    assert response.status_code == 418
-
-    assert response.json() == {
-        "success": False,
-        "error": "expected message"
-    }
+        assert response.json() == {"success": False, "error": "expected message"}
