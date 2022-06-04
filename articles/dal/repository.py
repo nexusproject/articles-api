@@ -22,10 +22,10 @@ class Repository:
     """
 
     def __init__(self):
-        self.async_session = async_session()
+        self.session = async_session()
 
-    async def _has(self, session, article_id) -> bool:
-        has = await session.execute(
+    async def _has(self, article_id) -> bool:
+        has = await self.session.execute(
             select(Article.article_id)
             .where(Article.article_id == article_id)
             .with_for_update(read=True)  # LOCK IN SHARE MODE
@@ -35,13 +35,13 @@ class Repository:
 
     async def insert(self, article):
         """Insert."""
-        async with self.async_session() as session, session.begin():
+        async with self.session as session, session.begin():
             session.add(Article(**article.dict()))
 
     async def update(self, article_id, article):
         """Update."""
-        async with self.async_session() as session, session.begin():
-            if not await self._has(session, article_id):
+        async with self.session as session, session.begin():
+            if not await self._has(article_id):
                 raise RepositoryException(f"No article ID {article_id}. Cant UPDATE.")
 
             await session.execute(
@@ -52,8 +52,8 @@ class Repository:
 
     async def delete(self, article_id):
         """Delete."""
-        async with self.async_session() as session, session.begin():
-            if not await self._has(session, article_id):
+        async with self.session as session, session.begin():
+            if not await self._has(article_id):
                 raise RepositoryException(f"No article ID {article_id}. Cant DELETE.")
 
             await session.execute(
@@ -62,7 +62,7 @@ class Repository:
 
     async def get(self, article_id):
         """Get one article by id."""
-        async with self.async_session() as session, session.begin():
+        async with self.session as session:
             found = await session.execute(
                 select(Article).where(Article.article_id == article_id)
             )
@@ -73,8 +73,8 @@ class Repository:
                 raise RepositoryException(f"No article ID {article_id}. Cant GET.")
 
 
-    async def list(self, from_date, sort_by, sort_order, page, page_size):
-        async with self.async_session() as session, session.begin():
+    async def list(self, from_date=None, sort_by=None, sort_order='asc', page=0, page_size=10):
+        async with self.session as session:
             stmt = select(Article)
 
             if from_date:
@@ -84,6 +84,8 @@ class Repository:
                 if sort_by=='created':
                     if sort_order and sort_order=='desc':
                         stmt = stmt.order_by(Article.created.desc())
+                    else:
+                        stmt = stmt.order_by(Article.created.asc())
                 elif sort_by=='updated':
                     if sort_order and sort_order=='desc':
                         stmt = stmt.order_by(Article.updated.desc())
