@@ -1,0 +1,5 @@
+[flake8]
+exclude = ['.git', '.venv', '.env', '.mypy_cache', '.idea']
+max-complexity = 12
+docstring_style=SPHINX
+
