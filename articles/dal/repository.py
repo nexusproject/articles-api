@@ -3,7 +3,7 @@
 
 from .db import async_session
 from .model import Article
-from articles.types import ArticleEntry
+from articles.datatypes import ArticleEntry
 from sqlalchemy import update, exists, select, delete
 from pprint import pprint as p
 from datetime import datetime

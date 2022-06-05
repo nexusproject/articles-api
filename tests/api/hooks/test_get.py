@@ -7,7 +7,7 @@ from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import articles
-from articles.types import ArticleEntry
+from articles.datatypes import ArticleEntry
 from articles.api.schema import ReplyOne
 from articles.dal.repository import RepositoryException
 

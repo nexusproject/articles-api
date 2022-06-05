@@ -5,7 +5,7 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 
 from datetime import datetime
 
-from articles.types import Article
+from articles.datatypes import Article
 from articles.dal.repository import Repository
 
 import pytest

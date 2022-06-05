@@ -6,7 +6,7 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 from unittest.mock import AsyncMock, patch
 
 import articles
-from articles.types import Article
+from articles.datatypes import Article
 from articles.api.schema import Reply
 
 from httpx import AsyncClient

@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Union, Optional, Literal
 from pydantic import BaseModel
-from articles.types import ArticleEntry
+from articles.datatypes import ArticleEntry
 
 
 class Reply(BaseModel):
