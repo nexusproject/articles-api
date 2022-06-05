@@ -53,7 +53,7 @@ async def test_delete_failed(auth_header: dict) -> None:
 
         assert (
             response.json()
-            == ReplyFailed(success=False, error="expected message").dict()
+            == ReplyFailed(success=False, error="expected message").dict()  # noqa W503
         )
 
 
