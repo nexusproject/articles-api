@@ -16,7 +16,6 @@ pytest = "^7.1.2"
 requests = "^2.27.1"
 pytest-asyncio = "^0.18.3"
 httpx = "^0.23.0"
-pytest-mypy = "^0.9.1"
 pytest-flake8 = "^1.1.1"
 sqlalchemy-stubs = "^0.4"
 
@@ -28,9 +27,3 @@ mypy = "^0.960"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.flake8]
-exclude = ['.git', '.venv', '.env', '.mypy_cache', '.idea']
-max-complexity = 12
-docstring_style='sphinx'
-
