@@ -6,10 +6,11 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 from sqlalchemy import BigInteger, Column, DateTime, String, func
 from sqlalchemy.orm import declarative_base
 
+
 Base = declarative_base()
 
 
-class Article(Base):
+class Article(Base):  # type: ignore
     """Article ORM model."""
 
     __tablename__ = "articles"
