@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, patch
 import articles
 from articles.types import Article
 from articles.api.schema import Reply
+import articles.api.auth
 
 from httpx import AsyncClient
 
@@ -14,7 +15,7 @@ import pytest
 
 
 @pytest.mark.asyncio()
-async def test_create_success() -> None:
+async def test_create_success(auth_header) -> None:
     """Tests that the repository is calls properly and the response."""
     article = Article(
         topic="expected topic",
@@ -22,7 +23,9 @@ async def test_create_success() -> None:
     )
 
     with patch("articles.dal.Repository.insert", new_callable=AsyncMock):
-        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+        async with AsyncClient(
+            app=articles.api.app, base_url="http://localhost", headers=auth_header
+        ) as ac:
             response = await ac.post("/api/v1/create", content=article.json())
 
         articles.dal.Repository.insert.assert_called_with(article)
@@ -31,12 +34,27 @@ async def test_create_success() -> None:
 
 
 @pytest.mark.asyncio()
-async def test_create_failed() -> None:
+async def test_create_failed(auth_header) -> None:
     """Tests answer for wrong request."""
     with patch("articles.dal.repository.Repository.insert", new_callable=AsyncMock):
-
-        async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
+        async with AsyncClient(
+            app=articles.api.app, base_url="http://localhost", headers=auth_header
+        ) as ac:
             response = await ac.post("/api/v1/create", data={"wrong": "request"})
 
         assert response.status_code == 422
         assert response.reason_phrase == "Unprocessable Entity"
+
+@pytest.mark.asyncio()
+async def test_create_unauthorized() -> None:
+    """Tests answer for unauthorized request."""
+    wrong_h = {"Authorization": "wrong_key"}
+
+    with patch("articles.dal.repository.Repository.insert", new_callable=AsyncMock):
+        async with AsyncClient(
+            app=articles.api.app, base_url="http://localhost", headers=wrong_h
+        ) as ac:
+            response = await ac.post("/api/v1/create")
+
+        assert response.status_code == 401
+        assert response.reason_phrase == "Unauthorized"

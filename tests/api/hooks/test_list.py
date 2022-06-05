@@ -29,7 +29,7 @@ async def test_list_success() -> None:
     )
 
     with patch(
-            "articles.dal.Repository.list",
+        "articles.dal.Repository.list",
         new_callable=AsyncMock,
         return_value=[article, article],
     ) as repository_delete:
