@@ -21,7 +21,7 @@ async def test_repository_delete(session: sqlalchemy.orm.Session) -> None:
             "INSERT INTO articles (topic, text) VALUES ('some topic', 'some text')"
         )
 
-    await Repository().delete(res.lastrowid)
+    await Repository(session).delete(res.lastrowid)
 
     async with session:
         found = await session.execute(

@@ -7,7 +7,7 @@ from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import articles
-from articles import ArticleEntry
+from articles.types import ArticleEntry
 from articles.api.schema import ReplyList
 
 from httpx import AsyncClient
@@ -29,13 +29,13 @@ async def test_list_success() -> None:
     )
 
     with patch(
-        "articles.dal.repository.Repository.list",
+            "articles.dal.Repository.list",
         new_callable=AsyncMock,
         return_value=[article, article],
     ) as repository_delete:
         async with AsyncClient(app=articles.api.app, base_url="http://localhost") as ac:
             response = await ac.get(
-                f"/articles/v1/list?from_date={from_date.isoformat()}&"
+                f"/api/v1/list?from_date={from_date.isoformat()}&"
                 "sort_order=desc&sort_by=created&page=1&page_size=33"
             )
 

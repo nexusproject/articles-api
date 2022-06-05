@@ -7,11 +7,11 @@ from articles.dal.repository import Repository
 
 import pytest
 
-import sqlalchemy
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.fixture(autouse=True)
-async def _prepare_data(session: sqlalchemy.orm.Session) -> None:
+async def _prepare_data(session: AsyncSession) -> None:
     """Prepare data for test.
 
     :param session: SQLAlchemy session object.
@@ -47,51 +47,54 @@ async def _prepare_data(session: sqlalchemy.orm.Session) -> None:
 
 
 @pytest.mark.asyncio()
-async def test_repository_list_sort(session: sqlalchemy.orm.Session) -> None:
+async def test_repository_list_sort(session: AsyncSession) -> None:
     """Testing DAL Repository sort options in method list.
 
     :param session: SQLAlchemy session object.
     """
-    found = await Repository().list()
-    assert [entry.topic for entry in found] == ["topic c", "topic b", "topic a"]
+    async with session:
+        found = await Repository(session).list()
+        assert [entry.topic for entry in found] == ["topic c", "topic b", "topic a"]
 
-    found = await Repository().list(sort_by="created", sort_order="asc")
-    assert [entry.topic for entry in found] == ["topic c", "topic a", "topic b"]
+        found = await Repository(session).list(sort_by="created", sort_order="asc")
+        assert [entry.topic for entry in found] == ["topic c", "topic a", "topic b"]
 
-    found = await Repository().list(sort_by="created", sort_order="desc")
-    assert [entry.topic for entry in found] == ["topic b", "topic a", "topic c"]
+        found = await Repository(session).list(sort_by="created", sort_order="desc")
+        assert [entry.topic for entry in found] == ["topic b", "topic a", "topic c"]
 
-    found = await Repository().list(sort_by="updated")
-    assert [entry.topic for entry in found] == ["topic a", "topic b", "topic c"]
+        found = await Repository(session).list(sort_by="updated")
+        assert [entry.topic for entry in found] == ["topic a", "topic b", "topic c"]
 
-    found = await Repository().list(sort_by="topic")
-    assert [entry.topic for entry in found] == ["topic a", "topic b", "topic c"]
+        found = await Repository(session).list(sort_by="topic")
+        assert [entry.topic for entry in found] == ["topic a", "topic b", "topic c"]
 
-    found = await Repository().list(sort_by="topic", sort_order="desc")
-    assert [entry.topic for entry in found] == ["topic c", "topic b", "topic a"]
+        found = await Repository(session).list(sort_by="topic", sort_order="desc")
+        assert [entry.topic for entry in found] == ["topic c", "topic b", "topic a"]
 
 
 @pytest.mark.asyncio()
-async def test_repository_list_from(session: sqlalchemy.orm.Session) -> None:
+async def test_repository_list_from(session: AsyncSession) -> None:
     """Testing DAL Repository date_from option in method list.
 
     :param session: SQLAlchemy session object.
     """
-    found = await Repository().list(from_date="2022-06-04 02:02:02")
-    assert [entry.topic for entry in found] == ["topic a", "topic b"]
+    async with session:
+        found = await Repository(session).list(from_date="2022-06-04 02:02:02")
+        assert [entry.topic for entry in found] == ["topic a", "topic b"]
 
-    found = await Repository().list(from_date="2022-06-04 03:03:03")
-    assert [entry.topic for entry in found] == ["topic b"]
+        found = await Repository(session).list(from_date="2022-06-04 03:03:03")
+        assert [entry.topic for entry in found] == ["topic b"]
 
 
 @pytest.mark.asyncio()
-async def test_repository_list_page(session: sqlalchemy.orm.Session) -> None:
+async def test_repository_list_page(session: AsyncSession) -> None:
     """Testing DAL Repository page options in method list.
 
     :param session: SQLAlchemy session object.
     """
-    found = await Repository().list(sort_by="updated", page_size=2)
-    assert [entry.topic for entry in found] == ["topic a", "topic b"]
+    async with session:
+        found = await Repository(session).list(sort_by="updated", page_size=2)
+        assert [entry.topic for entry in found] == ["topic a", "topic b"]
 
-    found = await Repository().list(sort_by="updated", page=1, page_size=2)
-    assert [entry.topic for entry in found] == ["topic c"]
+        found = await Repository(session).list(sort_by="updated", page=1, page_size=2)
+        assert [entry.topic for entry in found] == ["topic c"]

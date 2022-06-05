@@ -1,5 +1,5 @@
 import pytest
-from articles.dal.db import engine
+from articles.dal import engine
 from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy
 

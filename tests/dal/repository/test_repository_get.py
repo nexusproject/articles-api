@@ -5,16 +5,16 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 
 from datetime import datetime
 
-from articles import ArticleEntry
+from articles.types import ArticleEntry
 from articles.dal.repository import Repository
 
 import pytest
 
-import sqlalchemy
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.mark.asyncio()
-async def test_repository_get(session: sqlalchemy.orm.Session) -> None:
+async def test_repository_get(session: AsyncSession) -> None:
     """Testing DAL Repository method get.
 
     :param session: SQLAlchemy session object.
@@ -29,10 +29,12 @@ async def test_repository_get(session: sqlalchemy.orm.Session) -> None:
             {"dt_cr": dt_created, "dt_up": dt_updated},
         )
 
-    assert await Repository().get(res.lastrowid) == ArticleEntry(
-        topic="expected topic",
-        text="expected text",
-        article_id=res.lastrowid,
-        created=dt_created,
-        updated=dt_updated,
-    )
+
+    async with session:
+        assert await Repository(session).get(res.lastrowid) == ArticleEntry(
+            topic="expected topic",
+            text="expected text",
+            article_id=res.lastrowid,
+            created=dt_created,
+            updated=dt_updated,
+        )

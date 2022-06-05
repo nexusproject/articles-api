@@ -5,16 +5,16 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 
 from datetime import datetime
 
-from articles import Article
+from articles.types import Article
 from articles.dal.repository import Repository
 
 import pytest
 
-import sqlalchemy
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.mark.asyncio()
-async def test_repository_get(session: sqlalchemy.orm.Session) -> None:
+async def test_repository_insert(session: AsyncSession) -> None:
     """Testing DAL Repository method insert.
 
     :param session: SQLAlchemy session object.
@@ -24,7 +24,8 @@ async def test_repository_get(session: sqlalchemy.orm.Session) -> None:
         text = 'expected text'
     )
 
-    await Repository().insert(article)
+    async with session, session.begin():
+        await Repository(session).insert(article)
 
 
     async with session, session.begin():

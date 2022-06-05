@@ -12,9 +12,19 @@ SQLAlchemy = {extras = ["asyncio"], version = "^1.4.37"}
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
 pydantic = "^1.9.1"
 aiomysql = "^0.1.1"
+pytest = "^7.1.2"
+requests = "^2.27.1"
+pytest-asyncio = "^0.18.3"
+httpx = "^0.23.0"
 
 [tool.poetry.dev-dependencies]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+exclude = ['.git', '.venv', '.env', '.mypy_cache', '.idea']
+max-complexity = 12
+docstring_style='sphinx'
+
