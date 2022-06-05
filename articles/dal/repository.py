@@ -4,7 +4,7 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from articles.datatypes import ArticleEntry
 
@@ -105,8 +105,8 @@ class Repository:
     async def list(
         self,
         from_date: Optional[datetime] = None,
-        sort_by: Optional[str] = None,
-        sort_order: str = "asc",
+        sort_by: Optional[Literal["created", "updated", "topic"]] = None,
+        sort_order: Optional[Literal["asc", "desc"]] = "asc",
         page: int = 0,
         page_size: int = 10
     ) -> list[ArticleEntry]:
