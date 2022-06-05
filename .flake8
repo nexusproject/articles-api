@@ -1,5 +1,4 @@
 [flake8]
-exclude = ['.git', '.venv', '.env', '.mypy_cache', '.idea']
 max-line-length = 90
 max-complexity = 12
 docstring_style=SPHINX
