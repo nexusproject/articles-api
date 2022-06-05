@@ -15,8 +15,11 @@ import pytest
 
 
 @pytest.mark.asyncio()
-async def test_delete_success(auth_header) -> None:
-    """Tests that the repository is calls properly and the response."""
+async def test_delete_success(auth_header: dict) -> None:
+    """Tests that the repository is calls properly and the response.
+
+    :param auth_header: Patched auth header from fixture
+    """
     with patch("articles.dal.Repository.delete", new_callable=AsyncMock):
         async with AsyncClient(
             app=articles.api.app, base_url="http://localhost", headers=auth_header
@@ -31,8 +34,11 @@ async def test_delete_success(auth_header) -> None:
 
 
 @pytest.mark.asyncio()
-async def test_delete_failed(auth_header) -> None:
-    """Tests the response if the reposithory raises an exception."""
+async def test_delete_failed(auth_header: dict) -> None:
+    """Tests the response if the reposithory raises an exception.
+
+    :param auth_header: Patched auth header from fixture
+    """
     with patch(
         "articles.dal.Repository.delete",
         new_callable=AsyncMock,
@@ -49,6 +55,7 @@ async def test_delete_failed(auth_header) -> None:
             response.json()
             == ReplyFailed(success=False, error="expected message").dict()
         )
+
 
 @pytest.mark.asyncio()
 async def test_delete_unauthorized() -> None:

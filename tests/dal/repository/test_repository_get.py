@@ -5,8 +5,8 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 
 from datetime import datetime
 
+from articles.dal import Repository
 from articles.datatypes import ArticleEntry
-from articles.dal.repository import Repository
 
 import pytest
 
@@ -28,7 +28,6 @@ async def test_repository_get(session: AsyncSession) -> None:
             "VALUES ('expected topic', 'expected text', :dt_cr, :dt_up)",
             {"dt_cr": dt_created, "dt_up": dt_updated},
         )
-
 
     async with session:
         assert await Repository(session).get(res.lastrowid) == ArticleEntry(

@@ -4,10 +4,11 @@ Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
 from unittest.mock import AsyncMock, patch
+
 import articles
-from articles.datatypes import Article
-from articles.api.schema import Reply
 import articles.api.auth
+from articles.api.schema import Reply
+from articles.datatypes import Article
 
 from httpx import AsyncClient
 
@@ -15,8 +16,11 @@ import pytest
 
 
 @pytest.mark.asyncio()
-async def test_create_success(auth_header) -> None:
-    """Tests that the repository is calls properly and the response."""
+async def test_create_success(auth_header: dict) -> None:
+    """Tests that the repository is calls properly and the response.
+
+    :param auth_header: Patched auth header from fixture
+    """
     article = Article(
         topic="expected topic",
         text="expected text",
@@ -34,8 +38,11 @@ async def test_create_success(auth_header) -> None:
 
 
 @pytest.mark.asyncio()
-async def test_create_failed(auth_header) -> None:
-    """Tests answer for wrong request."""
+async def test_create_failed(auth_header: dict) -> None:
+    """Tests answer for wrong request.
+
+    :param auth_header: Patched auth header from fixture
+    """
     with patch("articles.dal.repository.Repository.insert", new_callable=AsyncMock):
         async with AsyncClient(
             app=articles.api.app, base_url="http://localhost", headers=auth_header
@@ -44,6 +51,7 @@ async def test_create_failed(auth_header) -> None:
 
         assert response.status_code == 422
         assert response.reason_phrase == "Unprocessable Entity"
+
 
 @pytest.mark.asyncio()
 async def test_create_unauthorized() -> None:

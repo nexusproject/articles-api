@@ -7,8 +7,8 @@ from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import articles
-from articles.datatypes import ArticleEntry
 from articles.api.schema import ReplyList
+from articles.datatypes import ArticleEntry
 
 from httpx import AsyncClient
 

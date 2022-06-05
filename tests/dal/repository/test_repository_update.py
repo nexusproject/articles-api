@@ -3,10 +3,8 @@
 Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
-from datetime import datetime
-
+from articles.dal import Repository
 from articles.datatypes import Article
-from articles.dal.repository import Repository
 
 import pytest
 
@@ -21,12 +19,15 @@ async def test_repository_update(session: AsyncSession) -> None:
     """
     async with session, session.begin():
         res = await session.execute(
-            "INSERT INTO articles (topic, text) " "VALUES ('some topic', 'some text')",
+            "INSERT INTO articles (topic, text) VALUES ('some topic', 'some text')",
         )
 
     async with session, session.begin():
         await Repository(session).update(
-            res.lastrowid, Article(topic="Marge Sympson story", text="Something about Marge")
+            res.lastrowid, Article(
+                topic="Marge Sympson story",
+                text="Something about Marge"
+            )
         )
 
     async with session:

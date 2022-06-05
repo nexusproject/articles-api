@@ -3,10 +3,8 @@
 Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
 
-from datetime import datetime
-
+from articles.dal import Repository
 from articles.datatypes import Article
-from articles.dal.repository import Repository
 
 import pytest
 
@@ -20,13 +18,12 @@ async def test_repository_insert(session: AsyncSession) -> None:
     :param session: SQLAlchemy session object.
     """
     article = Article(
-        topic = 'Bart Sympson story',
-        text = 'expected text'
+        topic='Bart Sympson story',
+        text='expected text'
     )
 
     async with session, session.begin():
         await Repository(session).insert(article)
-
 
     async with session, session.begin():
         found = await session.execute(
