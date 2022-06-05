@@ -1,4 +1,4 @@
-"""Very simple authenication.
+"""Very simple authentication.
 
 Author: Dmitry Sergeev <realnexusway@gmail.com>
 """
@@ -10,7 +10,7 @@ KEY = "some_hardcoded_token"
 api_key_header = APIKeyHeader(name="Authorization", auto_error=True)
 
 
-async def get_api_key(api_key: str = Security(api_key_header)) -> str:
+async def get_api_key(api_key: str = Security(api_key_header)) -> str:  # noqa: B008
     """Very simple authenication.
 
     :param api_key: Permanent token string
