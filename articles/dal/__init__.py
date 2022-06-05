@@ -1,5 +1,10 @@
-from .db import engine, async_session, check_connection
-from .repository import Repository
-from .exception import DALException
+"""DAL init file.
 
-from sqlalchemy.ext.asyncio import AsyncSession
+Author: Dmitry Sergeev <realnexusway@gmail.com>
+"""
+
+from sqlalchemy.ext.asyncio import AsyncSession  # noqa: F401
+
+from .db import async_session, check_connection, engine  # noqa: F401
+from .exception import DALException  # noqa: F401
+from .repository import Repository  # noqa: F401

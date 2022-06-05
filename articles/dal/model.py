@@ -1,11 +1,17 @@
+"""DAL models.
 
-from sqlalchemy import Column, String, DateTime, func, BigInteger
+Author: Dmitry Sergeev <realnexusway@gmail.com>
+"""
+
+from sqlalchemy import BigInteger, Column, DateTime, String, func
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 class Article(Base):
     """Article ORM model."""
+
     __tablename__ = "articles"
 
     article_id = Column(BigInteger, primary_key=True)
