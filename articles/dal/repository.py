@@ -22,12 +22,7 @@ class RepositoryException(DALException):
 
 
 class Repository:
-    """Articles repository.
-
-    XXX: Definitely using ORM and Sessions here is unnecessarily.
-    Simple tablemodule pattern is enough in this task, but
-    i do this because this is a demo project.
-    """
+    """Articles repository."""
 
     def __init__(self, session: AsyncSession):
         """Repository init.

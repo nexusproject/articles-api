@@ -19,12 +19,12 @@ def get_database_url() -> str:
     :returns: SQLAlchemy database url
     :raises DALException: If enviroment var DATABASE_URL is not setted
     """
-    env_url = os.getenv('DATABASE_URL')
+    env_url = os.getenv("DATABASE_URL")
 
     if not env_url:
-        raise DALException('No DATABASE_URL enviroment variable is setted.')
+        raise DALException("No DATABASE_URL enviroment variable is setted.")
 
-    _, creds = env_url.split('://')
+    _, creds = env_url.split("://")
 
     return "mysql+aiomysql" + "://" + creds
 
@@ -35,6 +35,7 @@ engine = create_async_engine(
     pool_size=10,
     max_overflow=5,
     pool_pre_ping=True,
+    isolation_level="READ_COMMITTED",
 )
 
 
