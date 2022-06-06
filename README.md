@@ -52,9 +52,10 @@ curl -X GET http://localhost:8000/api/v1/list?from_date=2022-06-02T15:40:00\&sor
 All query options are optional
 
 ##### Access from WEB, docs and openapi schema
-[Link to Docs]('http://localhost:8000/docs')
+[Link to Docs](http://localhost:8000/docs)
 
-[Link to openapi schema]('http://localhost:8000/openapi.json')
+[Link to openapi schema](http://localhost:8000/openapi.json)
+
 
 ## Running Tests
 ##### With Docker Compose:
