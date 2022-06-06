@@ -91,7 +91,10 @@ async def update(
 
 
 @app.delete(
-    "/api/v1/article/{article_id}", response_class=MyResponse, response_model=Reply
+    "/api/v1/article/{article_id}",
+    response_class=MyResponse,
+    response_model=Reply,
+    responses={418: {"model": ReplyFailed}},
 )
 async def delete(
     article_id: int,
@@ -115,7 +118,6 @@ async def delete(
     response_class=MyResponse,
     response_model=ReplyOne,
     responses={418: {"model": ReplyFailed}},
-    status_code=200,
 )
 async def get(
     article_id: int,
@@ -138,7 +140,6 @@ async def get(
     "/api/v1/list",
     response_class=MyResponse,
     response_model=ReplyList,
-    status_code=200,
 )
 async def list(
     from_date: Optional[datetime] = None,
