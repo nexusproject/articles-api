@@ -56,6 +56,17 @@ All query options are optional
 
 [Link to openapi schema](http://localhost:8000/openapi.json)
 
+#### Switching to XML and other content types
+It's pretty simple. In general terms, you need to change the `MyResponse` object in the `articles/api/response.py` file.
+
+Something like this:
+```
+class MyResponse(Response):
+    media_type = "text/xml"
+
+    def render(self, content) -> bytes:
+        return dumps({'response': content}).encode("utf-8")
+```
 
 ## Running Tests
 ##### With Docker Compose:
