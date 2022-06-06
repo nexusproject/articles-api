@@ -28,6 +28,12 @@ async def startup_event() -> None:
     await dal.check_connection()
 
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Shutdown hook."""
+    await dal.shutdown()
+
+
 @app.exception_handler(dal.DALException)
 async def exception_handler(request: Request, exc: dal.DALException) -> MyResponse:
     """Exception handler.

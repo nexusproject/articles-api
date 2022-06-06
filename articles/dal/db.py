@@ -50,3 +50,8 @@ async def check_connection() -> None:
     """Checking database connection."""
     async with engine.begin():
         pass
+
+
+async def shutdown() -> None:
+    """Shutdown."""
+    await engine.dispose()
