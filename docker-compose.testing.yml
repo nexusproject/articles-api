@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  server:
+    build: .
+    command: test
+    environment:
+      - TEST_DATABASE_URL=mysql://root:@mysql:3306/__articles_testing
+    ports:
+      - 8000:8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: percona/percona-server:8.0
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3307:3306
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root
+      interval: 1s
+      retries: 20
+      start_period: 10s
+
