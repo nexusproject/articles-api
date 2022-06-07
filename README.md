@@ -57,7 +57,7 @@ All query options are optional
 [Link to openapi schema](http://localhost:8000/openapi.json)
 
 #### Switching to XML and other content types
-It's pretty simple. In general terms, you need to change the `MyResponse` object in the `articles/api/response.py` file.
+It's pretty simple. In general terms, you need to change `MyResponse` object in the `articles/api/response.py` file.
 
 Something like this:
 ```
