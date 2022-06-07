@@ -40,7 +40,7 @@ class Repository:
         has = await self.session.execute(
             select(Article.article_id)
             .where(Article.article_id == article_id)
-            .with_for_update(read=True)  # LOCK IN SHARE MODE
+            .with_for_update(read=False)  # LOCK WITHOUT SHARING
         )
 
         return bool(has.first())
