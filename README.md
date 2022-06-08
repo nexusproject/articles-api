@@ -1,5 +1,5 @@
 # Articles API Server
-This is a fully asynchronous API server, that realizes headless (no UI) CMS for managing articles (CRUD).
+This is a fully asynchronous API server, that implements headless (no UI) CMS for managing articles (CRUD).
 
 Technologies: Python 3.9, FastAPI, MySQL Percona Server 8, SQLAlchemy
 
